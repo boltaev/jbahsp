@@ -8,23 +8,14 @@ import (
 	"strings"
 )
 
-func scanTaboo(file *os.File) {
+func scanTaboo() string {
 	var tabooWord string
 	fmt.Scan(&tabooWord)
 	tabooWord = strings.ToLower(tabooWord) // lowercase the string
-	if tabooWord == "exit" {
-		fmt.Println("Bye!")
-		return
-	}
-	remarkTaboo(file, tabooWord)
+	return tabooWord
 }
 
-func remarkTaboo(file *os.File, tabooWord string) {
-	// assigning scanning function to the scanner variable
-	scanner := bufio.NewScanner(file)
-	// split each scanned line into words
-	scanner.Split(bufio.ScanWords)
-
+func remarkTaboo(scanner *bufio.Scanner, tabooWord string) {
 	for scanner.Scan() {
 		if tabooWord == scanner.Text() {
 			stars := len(tabooWord)
@@ -38,12 +29,11 @@ func remarkTaboo(file *os.File, tabooWord string) {
 		log.Fatal(err)
 	}
 	fmt.Println(tabooWord)
-	scanTaboo(file)
 }
 
 func main() {
 	// scanning file name from command line
-	var fileName string
+	var fileName, tabooWord string
 	fmt.Scan(&fileName)
 	// opening file and checking existing test
 	// or return error message, defer close function
@@ -53,7 +43,18 @@ func main() {
 	}
 	defer file.Close()
 
-	scanTaboo(file)
-}
+	// assigning scanning function to the scanner variable
+	scanner := bufio.NewScanner(file)
 
-// recommendations and hits
+	// split each scanned line into words
+	scanner.Split(bufio.ScanWords)
+
+	for {
+		tabooWord = scanTaboo()
+		if tabooWord == "exit" {
+			fmt.Println("Bye!")
+			break
+		}
+		remarkTaboo(scanner, tabooWord)
+	}
+}
