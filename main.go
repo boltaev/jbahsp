@@ -17,16 +17,11 @@ func scanTaboo() []string {
 
 func remarkTaboo(badWords []string, tabooWord []string) {
 	var result string
-	inputArr := tabooWord // here assigning new variable for case
-	// lowering words
-	for _, s := range inputArr {
-		s = strings.ToLower(s)
-	}
 	// comparing words from two arrays
 	for i := 0; i < len(badWords); i++ {
-		for j := 0; j < len(inputArr); j++ {
-			if badWords[i] == inputArr[j] {
-				stars := len(inputArr[j])
+		for j := 0; j < len(tabooWord); j++ {
+			if badWords[i] == strings.ToLower(tabooWord[j]) {
+				stars := len(tabooWord[j])
 				tabooWord[j] = ""
 				for i := 0; i < stars; i++ {
 					tabooWord[j] += "*"
