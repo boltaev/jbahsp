@@ -1,10 +1,5 @@
-disgusting
-unpleasant
-ugly
-bad
-awful
-atrocious
-harsh
-crummy
-dreadful
+disgusting unpleasant
+ugly bad awful
+atrocious harsh
+crummy dreadful
 lousy
