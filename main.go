@@ -9,13 +9,14 @@ import (
 )
 
 func scanTaboo() []string {
-	var tabooWord string
-	fmt.Scan(&tabooWord)
-	inputArr := strings.Split(tabooWord, " ")
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	line := scanner.Text()
+	inputArr := strings.Split(line, " ")
 	return inputArr
 }
 
-func remarkTaboo(badWords []string, tabooWord []string) {
+func remarkTaboo(badWords map[int]string, tabooWord []string) {
 	var result string
 	// comparing words from two arrays
 	for i := 0; i < len(badWords); i++ {
@@ -23,7 +24,7 @@ func remarkTaboo(badWords []string, tabooWord []string) {
 			if badWords[i] == strings.ToLower(tabooWord[j]) {
 				stars := len(tabooWord[j])
 				tabooWord[j] = ""
-				for i := 0; i < stars; i++ {
+				for p := 0; p < stars; p++ {
 					tabooWord[j] += "*"
 				}
 			}
@@ -40,9 +41,11 @@ func remarkTaboo(badWords []string, tabooWord []string) {
 func main() {
 	// scanning file name from command line
 	var fileName string
-	var badWords, tabooWord []string
 
+	badWords := make(map[int]string)
+	var tabooWord []string
 	fmt.Scan(&fileName)
+
 	// opening file and checking existing test
 	// or return error message, defer close function
 	file, err := os.Open(fileName)
@@ -53,12 +56,13 @@ func main() {
 
 	// assigning scanning function to the scanner variable
 	scanner := bufio.NewScanner(file)
-
 	// split each scanned line into words
 	scanner.Split(bufio.ScanWords)
 
-	for i := 0; i < len(scanner.Text()); i++ {
+	var i int
+	for scanner.Scan() {
 		badWords[i] = scanner.Text()
+		i++
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -73,4 +77,5 @@ func main() {
 		}
 		remarkTaboo(badWords, tabooWord)
 	}
+
 }
