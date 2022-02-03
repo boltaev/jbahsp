@@ -9,41 +9,54 @@ import (
 )
 
 func scanTaboo() []string {
+	fmt.Print("Please enter your text(or enter exit for stop chatting): ")
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 	line := scanner.Text()
-	inputArr := strings.Split(line, " ")
-	return inputArr
+	introLine := strings.Split(line, " ")
+	return introLine
 }
 
-func remarkTaboo(badWords map[int]string, tabooWord []string) {
+func remarkTaboo(tabooWords map[int]string, introLine []string) {
 	var result string
 	// comparing words from two arrays
-	for i := 0; i < len(badWords); i++ {
-		for j := 0; j < len(tabooWord); j++ {
-			if badWords[i] == strings.ToLower(tabooWord[j]) {
-				stars := len(tabooWord[j])
-				tabooWord[j] = ""
+	for i := 0; i < len(tabooWords); i++ {
+		for j := 0; j < len(introLine); j++ {
+			if tabooWords[i] == strings.ToLower(introLine[j]) {
+				stars := len(introLine[j])
+				introLine[j] = ""
 				for p := 0; p < stars; p++ {
-					tabooWord[j] += "*"
+					introLine[j] += "*"
 				}
 			}
 		}
 	}
 	// uniting words from arrays to the string
-	for q := 0; q < len(tabooWord); q++ {
-		result += tabooWord[q] + " "
+	for q := 0; q < len(introLine); q++ {
+		result += introLine[q] + " "
 	}
-
+	fmt.Print("Checked text: ")
 	fmt.Println(result)
+}
+
+func mainLoop(tabooWords map[int]string, introLine []string) {
+	for {
+		introLine = scanTaboo()
+		if introLine[0] == "exit" {
+			fmt.Println("Bye!")
+			break
+		}
+		remarkTaboo(tabooWords, introLine)
+	}
 }
 
 func main() {
 	// scanning file name from command line
 	var fileName string
 
-	badWords := make(map[int]string)
-	var tabooWord []string
+	tabooWords := make(map[int]string)
+	var introLine []string
+	fmt.Print("Please enter name of txt format file: ")
 	fmt.Scan(&fileName)
 
 	// opening file and checking existing test
@@ -61,7 +74,7 @@ func main() {
 
 	var i int
 	for scanner.Scan() {
-		badWords[i] = scanner.Text()
+		tabooWords[i] = scanner.Text()
 		i++
 	}
 
@@ -69,13 +82,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	for {
-		tabooWord = scanTaboo()
-		if tabooWord[0] == "exit" {
-			fmt.Println("Bye!")
-			break
-		}
-		remarkTaboo(badWords, tabooWord)
-	}
-
+	mainLoop(tabooWords, introLine)
 }
+
+// comment section for notes
+// when we enter second command on CL
+// loop works without reason as an empty function
+
+// future plans for this project:
+// commenting every function and action
+// for more details
